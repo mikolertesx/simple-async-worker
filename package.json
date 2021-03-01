@@ -1,0 +1,11 @@
+{
+  "name": "simple-async-worker",
+  "version": "1.0.0",
+  "description": "An asynchronus task manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel Angel Guerrero Salinas",
+  "license": "ISC"
+}
