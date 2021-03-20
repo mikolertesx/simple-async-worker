@@ -5,7 +5,11 @@ This is a very small asynchronus worker, it takes in promises and asks you how m
 ## Examples
 
 ```javascript
-const worker = new AsyncWorker({maxAsyncTasks: 1});
+// Providing onDone is optional.
+const worker = new AsyncWorker({maxAsyncTasks: 1, onDone: () => {
+	console.log("It ended every task!");
+}});
+
 worker.addTask(async () => {
 	const data = await fetch("some page");
 	await doSomethingWithData(data);
@@ -17,9 +21,15 @@ worker.addTask(async () => {
 	await doSomethingWithData(data);
 	return;
 });
+
+// Get if every work is done.
+console.log(worker.isDone);
+
+// Get the amount of active jobs it is doing (Not the amount of tasks left).
+console.log(worker.currentJobs);
+
+// Get an array of promises that are still unresolved.
+// The array is a copy, and not a direct pointer.
+console.log(worker.tasks);
+
 ```
-Since we've specified that it only does one task at the same time, the last one will have to wait for the first one to finish.
-
-It uses a queue in order to do that.
-
-That's the library, there's no extra functionality than that, and it's extremely small.
