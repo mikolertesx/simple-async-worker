@@ -7,8 +7,8 @@ class SimpleAsyncWorker {
     this._maxAsyncTasks = maxAsyncTasks;
     this._currentJobs = 0;
     this._onDone = onDone;
+    this._onAwait = null;
   }
-  // TODO Return a promise that starts when the current tasks begins.
   addTask(promise) {
     this._tasks.push(promise);
     this.work();
@@ -19,6 +19,9 @@ class SimpleAsyncWorker {
       if (!newTask) {
         // No more tasks have been queued up.
         if (this._onDone && this._currentJobs === 0) {
+          if (this._onAwait) {
+            this._onAwait();
+          }
           this._onDone();
         }
         return;
@@ -32,13 +35,21 @@ class SimpleAsyncWorker {
     }
   }
   get isDone() {
-    return this._tasks.length === 0;
+    return this._tasks.length === 0 && this._currentJobs === 0;
   }
   get currentJobs() {
     return this._currentJobs;
   }
   get tasks() {
     return [...this._tasks];
+  }
+  waitFinish() {
+    if (this.isDone) {
+      return Promise.resolve();
+    }
+    return new Promise((resolve) => {
+      this._onDone = resolve;
+    });
   }
 }
 

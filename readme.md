@@ -4,11 +4,10 @@ This is a very small asynchronus worker, it takes in promises and asks you how m
 
 ## Examples
 
+### Simple use
+
 ```javascript
-// Providing onDone is optional.
-const worker = new AsyncWorker({maxAsyncTasks: 1, onDone: () => {
-	console.log("It ended every task!");
-}});
+const worker = new AsyncWorker({maxAsyncTasks: 1});
 
 worker.addTask(async () => {
 	const data = await fetch("some page");
@@ -33,3 +32,53 @@ console.log(worker.currentJobs);
 console.log(worker.tasks);
 
 ```
+
+### OnDone Callback
+
+```javascript
+const worker = new AsyncWorker({maxAsyncTasks: 1, onDone: () => {
+	console.log("This will happen when the worker finishes.");
+}});
+
+worker.addTask(async () => {
+	const data = await fetch("some page");
+	await doSomethingWithData(data);
+	return;
+});
+
+worker.addTask(async () => {
+	const data = await fetch("some other page");
+	await doSomethingWithData(data);
+	return;
+});
+
+```
+
+### Await/Async use
+
+```javascript
+const worker = new AsyncWorker({maxAsyncTasks: 1});
+
+worker.addTask(async () => {
+	const data = await fetch("some page");
+	await doSomethingWithData(data);
+	return;
+});
+
+worker.addTask(async () => {
+	const data = await fetch("some other page");
+	await doSomethingWithData(data);
+	return;
+});
+
+// You can use await.
+await worker.waitFinish();
+console.log("Finished!");
+
+// Or then.
+await worker.waitFinish().then(() => {
+	console.log("Finished!");
+})
+```
+
+Note, using the onDone callback, and the waitFinish is mutually exclusive, meaning that you can't use both in the same worker.

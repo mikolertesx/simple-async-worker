@@ -1,6 +1,6 @@
 {
   "name": "simple-async-worker",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "An asynchronus task manager",
   "main": "index.js",
   "scripts": {
